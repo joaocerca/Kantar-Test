@@ -78,7 +78,16 @@ public class Stats{
     }
 
     public String getDuration(){
+        return duration;
+    }
 
+    public void setDuration(String startTime, String endTime){
+
+        this.duration = calculateDuration(startTime, endTime);
+
+    }
+
+    public String calculateDuration(String startTime, String endTime){
         //gets the input format of the timestamps
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -92,15 +101,17 @@ public class Stats{
             DateTime dt1 = new DateTime(date1);
             DateTime dt2 = new DateTime(date2);
 
-            duration = String.valueOf((Minutes.minutesBetween(dt1, dt2).getMinutes() * 60) + 60);
+            this.duration = String.valueOf((Minutes.minutesBetween(dt1, dt2).getMinutes() * 60) + 60);
 
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        return duration;
+        return this.duration;
+
     }
+
 
     public void setEndTimeSoloSession(){
 

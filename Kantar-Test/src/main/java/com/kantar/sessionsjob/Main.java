@@ -2,6 +2,8 @@ package com.kantar.sessionsjob;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,6 +11,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,6 +34,7 @@ public class Main {
 //        String path = "src/input-statements.psv";
 
         List<Stats> sortedStats = importValues(inputFile);
+        calculateSessionDuration(sortedStats);
         exportValuesToPsv(sortedStats, outputFile);
 
     }
@@ -69,14 +74,12 @@ public class Main {
 
         Comparator<Stats> compareThem = Comparator.comparing(Stats::getHouseNumber).thenComparing(Stats::getStartTime);
 
-        List<Stats> sortedStats = statsArrayList.stream().sorted(compareThem).collect(Collectors.toList());
-
-        return sortedStats;
+        return statsArrayList.stream().sorted(compareThem).collect(Collectors.toList());
 
     }
 
 
-    public static List<Stats> adjustEndTime(List<Stats> sortedStats) {
+    public static void adjustEndTime(List<Stats> sortedStats) {
 
         ListIterator<Stats> iterator = sortedStats.listIterator();
 
@@ -100,7 +103,15 @@ public class Main {
 
         }
 
-        return sortedStats;
+    }
+
+
+    public static void calculateSessionDuration(List<Stats> sortedStats){
+
+        for (Stats stat : sortedStats) {
+            stat.setDuration(stat.getStartTime(), stat.getEndTime());
+        }
+
     }
 
 
